@@ -40,7 +40,7 @@ cp .env.example .env
 Fill in the values in `.env` before continuing, then run:
 
 ```bash
-./demo.sh
+./scripts/demo.sh
 ```
 
 The script will derive the EVM address from a Solana PDA, request a

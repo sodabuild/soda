@@ -609,7 +609,7 @@ async function main() {
     }
   }
 
-  // Persist the latest ETH tx hash so demo.sh can hand it to `pnpm verify`.
+  // Persist the latest ETH tx hash so scripts/demo.sh can hand it to `pnpm verify`.
   try {
     const { writeFileSync } = await import("node:fs");
     writeFileSync(resolve(REPO_ROOT, ".last-tx-hash"), ethTxHash + "\n");

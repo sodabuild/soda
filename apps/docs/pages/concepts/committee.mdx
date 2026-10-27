@@ -9,7 +9,7 @@ import { Callout } from 'nextra/components'
 The committee is the set of off-chain nodes that hold the secret material
 backing `group_pk`. A request is fulfilled when enough of them sign. The
 codebase ships **two committee implementations** today: v0 single dev
-signer (still works, used by `./demo.sh` by default) and v0.5 real
+signer (still works, used by `./scripts/demo.sh` by default) and v0.5 real
 Lindell '17 2-of-2 MPC ECDSA (the new path).
 
 ## v0 — single dev signer
@@ -18,7 +18,7 @@ A single Tokio binary (`contracts/signer/`) holds one 32-byte k256 secret
 key in `keyshare.dev.json`. It subscribes to Solana logs, signs whatever
 `SigRequested` events it can derive a tweak for, and submits
 `finalize_signature`. This is enough to prove the end-to-end pipeline
-works on devnet → Sepolia, and it's what `./demo.sh` exercises today.
+works on devnet → Sepolia, and it's what `./scripts/demo.sh` exercises today.
 
 <Callout type="warning">
   v0 trust assumption: the dev key on disk is honest. There is no

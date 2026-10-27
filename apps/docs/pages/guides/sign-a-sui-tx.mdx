@@ -288,7 +288,7 @@ unit tests. Copy them into your program, or CPI `sui_demo` directly.
   <Tabs.Tab>
 
 Call the `sui_demo` program (`9LBE5dntoLRV61AM3W3ZHikgZPqZ5MLS4xCVvSxxbXug`)
-with the IDL; it is live on devnet, and `./demo.sh` deploys it to whichever
+with the IDL; it is live on devnet, and `./scripts/demo.sh` deploys it to whichever
 cluster is missing it. The `sig_request` PDA is seeded by
 `(requester, payload)` on the `soda` program:
 
@@ -423,14 +423,14 @@ The full reference implementation is
 [`apps/demo/src/demo-sui.ts`](https://github.com/JingYuan0926/frontier/blob/main/apps/demo/src/demo-sui.ts):
 derive → fund (sponsor key, else faucet, else poll) → coins + gas price →
 quote → build + simulate → `sign_sui_tx` → sign (MPC or dev key with tweak)
-→ `finalize_signature` → `executeTransaction` → Suiscan link. `./demo.sh`
+→ `finalize_signature` → `executeTransaction` → Suiscan link. `./scripts/demo.sh`
 routes there for any `DEMO_CHAIN=sui-*` and chains into
 `pnpm verify:sui` afterwards:
 
 ```bash
-DEMO_CHAIN=sui-testnet ./demo.sh
-DEMO_CHAIN=sui-testnet DEMO_RECIPIENT=0x… ./demo.sh   # send to someone else
-DEMO_CHAIN=sui-testnet SODA_DRY_RUN=1 ./demo.sh       # Solana side only, made-up gas coin
+DEMO_CHAIN=sui-testnet ./scripts/demo.sh
+DEMO_CHAIN=sui-testnet DEMO_RECIPIENT=0x… ./scripts/demo.sh   # send to someone else
+DEMO_CHAIN=sui-testnet SODA_DRY_RUN=1 ./scripts/demo.sh       # Solana side only, made-up gas coin
 ```
 
 The production-shape split exists too. `apps/relayer` subscribes to
@@ -445,7 +445,7 @@ stored.
 
 ## A concrete run
 
-On 2026-09-10 `DEMO_CHAIN=sui-testnet ./demo.sh` ran with the Solana wallet
+On 2026-09-10 `DEMO_CHAIN=sui-testnet ./scripts/demo.sh` ran with the Solana wallet
 `D5pwjGzqvgvuFt4rtMVf1ta4RKXWyGGfG2ekh5KuDfZw` on Solana devnet and the
 public Sui testnet, buying DEEP on DeepBook and then selling it back:
 

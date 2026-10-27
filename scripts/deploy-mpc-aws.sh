@@ -222,7 +222,7 @@ Next steps (run on your laptop):
 
   # 3. Point the subscriber at AWS and run the demo
   MPC_COORDINATOR_URL=http://$COORD_IP:8000 pnpm mpc:subscribe
-  ./demo.sh
+  ./scripts/demo.sh
 
 If curl from your laptop hangs, open inbound TCP 8000 on the coordinator's
 security group (from your IP, or 0.0.0.0/0 for the hackathon demo).

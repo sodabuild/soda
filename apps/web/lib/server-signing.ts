@@ -23,7 +23,7 @@ import { sodaIdl } from "@/lib/idls";
 import { sendAndWait } from "@/lib/solana-confirm";
 
 export const REPO_ROOT = resolve(process.cwd(), "../..");
-// Read by demo.sh so `pnpm verify` / `pnpm verify:sui` can chain off the last
+// Read by scripts/demo.sh so `pnpm verify` / `pnpm verify:sui` can chain off the last
 // broadcast without a copy-paste of the hash.
 export const LAST_TX_PATH = resolve(REPO_ROOT, ".last-tx-hash");
 export const SIGNER_KEY_PATH = resolve(REPO_ROOT, "keyshare.dev.json");

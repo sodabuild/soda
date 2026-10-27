@@ -73,7 +73,7 @@ graph LR
 
 ## On-chain (Anchor)
 
-Three programs, all deployed on Solana devnet, and `demo.sh` deploys any
+Three programs, all deployed on Solana devnet, and `scripts/demo.sh` deploys any
 that are missing on whichever cluster you point it at:
 
 | Program | Program ID | Purpose |
@@ -164,7 +164,7 @@ deployed across **three EC2 instances in us-east-1**:
 The on-chain `Committee.group_pk` was migrated from the v0 single key to
 the AWS joint key via the new
 [`update_committee` ix](/reference/soda-program#update_committee).
-`./demo.sh` now drives signing through the AWS coordinator without any
+`./scripts/demo.sh` now drives signing through the AWS coordinator without any
 flag changes. Neither node sees the joint secret. Signing runs the
 4-message Lindell '17 protocol; on-chain
 `secp256k1_recover` verifies the result unchanged.

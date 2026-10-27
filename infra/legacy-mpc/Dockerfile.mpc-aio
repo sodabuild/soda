@@ -1,7 +1,7 @@
 # SODA MPC all-in-one container: node p1, node p2 and the coordinator in one
 # image, supervised by scripts/mpc-all-in-one.mjs.
 #
-#   docker build -f Dockerfile.mpc-aio -t soda-mpc-aio .
+#   docker build -f infra/legacy-mpc/Dockerfile.mpc-aio -t soda-mpc-aio .   # run from the repo root
 #
 # This exists so the stack fits in a single Render web service. It puts both
 # shares on one filesystem, which defeats the point of 2-of-2 threshold

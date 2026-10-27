@@ -119,7 +119,7 @@ const SEPOLIA_RPC = process.env.SEPOLIA_RPC_URL ?? "https://rpc.sepolia.org";
 // no chain (only the tag went into the derivation, and Sui tx bytes don't
 // name one), so this is the relayer's one piece of Sui configuration. Falls
 // back to DEMO_CHAIN when that is a Sui key, so `DEMO_CHAIN=sui-devnet
-// ./demo.sh` and a relayer reading the same .env land on the same network.
+// ./scripts/demo.sh` and a relayer reading the same .env land on the same network.
 const SUI_CHAIN = getSuiChain(
   process.env.SUI_CHAIN ??
     ((process.env.DEMO_CHAIN ?? "").trim().toLowerCase() in SUI_CHAINS ? process.env.DEMO_CHAIN : undefined),

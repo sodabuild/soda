@@ -86,22 +86,22 @@ and polls until you fund it from [faucet.sui.io](https://faucet.sui.io).
 The CLI is the canonical demo path.
 
 ```bash
-./demo.sh
+./scripts/demo.sh
 ```
 
 Defaults to Solana devnet and an Aave V3 `depositETH` of 0.0001 ETH: the
 derived address ends up holding aWETH, a lending position owned by a Solana
-account. After a successful broadcast, `demo.sh` automatically runs
+account. After a successful broadcast, `scripts/demo.sh` automatically runs
 `pnpm verify <hash>`, which prints the cryptographic audit trail (the checks
 tying the Solana `SigRequest` PDA to the broadcast EVM transaction).
 
 ```bash
-DEMO_ACTION=borrow ./demo.sh             # Pool.borrow 0.1 USDC against the aWETH
-DEMO_CHAIN=base-sepolia ./demo.sh        # destination chain: sepolia | base-sepolia
-DEMO_CHAIN=sui-testnet ./demo.sh         # Sui: buy DEEP on DeepBook from the derived Sui address
-DEMO_ACTION=sell DEMO_CHAIN=sui-testnet ./demo.sh    # sell that DEEP back for SUI
-SODA_DRY_RUN=1 ./demo.sh                 # skip the foreign-chain broadcast, verify on-chain only
-SOLANA_CLUSTER=local ./demo.sh           # against a local validator
+DEMO_ACTION=borrow ./scripts/demo.sh             # Pool.borrow 0.1 USDC against the aWETH
+DEMO_CHAIN=base-sepolia ./scripts/demo.sh        # destination chain: sepolia | base-sepolia
+DEMO_CHAIN=sui-testnet ./scripts/demo.sh         # Sui: buy DEEP on DeepBook from the derived Sui address
+DEMO_ACTION=sell DEMO_CHAIN=sui-testnet ./scripts/demo.sh    # sell that DEEP back for SUI
+SODA_DRY_RUN=1 ./scripts/demo.sh                 # skip the foreign-chain broadcast, verify on-chain only
+SOLANA_CLUSTER=local ./scripts/demo.sh           # against a local validator
 ```
 
 The borrow is the proof of control: a deposit could be read as "sent ETH to a
@@ -120,7 +120,7 @@ the Aave pair: `swap` buys DEEP with SUI off Sui's on-chain central limit
 order book, `sell` spends that DEEP back. The sell is the proof of control —
 it moves coin objects the address acquired itself, not the SUI it was
 funded with. `DEMO_ACTION=transfer` is a plain transfer, kept as a fallback.
-`demo.sh` chains into `pnpm verify:sui <digest>` afterwards. See
+`scripts/demo.sh` chains into `pnpm verify:sui <digest>` afterwards. See
 [Sign a Sui tx](/guides/sign-a-sui-tx).
 
   </Tabs.Tab>
@@ -164,7 +164,7 @@ pnpm signer
 pnpm relayer:dev
 
 # Terminal 3 — kick it off
-./demo.sh
+./scripts/demo.sh
 ```
 
 Each process logs its own work; all three independently arrive at the same
@@ -193,7 +193,7 @@ pnpm mpc:update-committee
 pnpm mpc:subscribe
 
 # 5. Run the demo as usual; signing now goes through MPC
-./demo.sh
+./scripts/demo.sh
 ```
 
 For the full deploy walkthrough (two EC2 hosts in different regions
@@ -236,4 +236,4 @@ set `VERIFY_REQUESTER=<pubkey>` to audit a run signed by another account.
 | Sui faucet `429 Wait for Ns` | The public faucet rate-limits per IP. Use [faucet.sui.io](https://faucet.sui.io), the Sui Discord, or set `SUI_FUNDER_KEY`; the demo keeps polling the balance. |
 | `no SUI coin objects at 0x…` | Unfunded, or the GraphQL indexer has not seen the faucet transfer yet. Check Suiscan and rerun in a few seconds. |
 | Sui dry-run `FAILURE` after a top-up | A gas coin's version changed between reading it and building the tx. Rerun; the demo refetches coins and the payload is new. |
-| `DEMO_CHAIN=sui-testnet` still runs the EVM demo | An older `demo.sh` let `.env` override the environment. Current `demo.sh` keeps what you set on the command line. |
+| `DEMO_CHAIN=sui-testnet` still runs the EVM demo | An older `scripts/demo.sh` let `.env` override the environment. Current `scripts/demo.sh` keeps what you set on the command line. |

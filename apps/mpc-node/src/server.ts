@@ -52,7 +52,7 @@ if (share.role !== ROLE) {
  * the URL can run the protocol and get a valid committee signature on any
  * payload they choose.
  *
- * Unset = open. That keeps `docker compose -f docker-compose.mpc.yml up` and
+ * Unset = open. That keeps `docker compose -f infra/legacy-mpc/docker-compose.mpc.yml up` and
  * local `pnpm dev` working with no configuration. The startup log says so.
  */
 const AUTH_TOKEN = process.env.MPC_AUTH_TOKEN ?? ''

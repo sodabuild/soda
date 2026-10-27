@@ -10,7 +10,7 @@
 #
 # Then:
 #
-#   docker compose -f docker-compose.mpc.yml up --build
+#   docker compose -f infra/legacy-mpc/docker-compose.mpc.yml up --build
 #
 # Health: curl http://localhost:8000/health
 # Sign  : curl -XPOST http://localhost:8000/sign \
@@ -20,7 +20,7 @@
 services:
   mpc-node-p1:
     build:
-      context: .
+      context: ../..
       dockerfile: apps/mpc-node/Dockerfile
     image: soda-mpc-node:latest
     environment:
@@ -28,7 +28,7 @@ services:
       MPC_SHARE_PATH: /data/share-p1.json
       PORT: 8001
     volumes:
-      - ./apps/mpc-node/shares:/data:ro
+      - ../../apps/mpc-node/shares:/data:ro
     ports:
       - "8001:8001"
     restart: unless-stopped
@@ -40,7 +40,7 @@ services:
 
   mpc-node-p2:
     build:
-      context: .
+      context: ../..
       dockerfile: apps/mpc-node/Dockerfile
     image: soda-mpc-node:latest
     environment:
@@ -48,7 +48,7 @@ services:
       MPC_SHARE_PATH: /data/share-p2.json
       PORT: 8002
     volumes:
-      - ./apps/mpc-node/shares:/data:ro
+      - ../../apps/mpc-node/shares:/data:ro
     ports:
       - "8002:8002"
     restart: unless-stopped
@@ -60,7 +60,7 @@ services:
 
   mpc-coordinator:
     build:
-      context: .
+      context: ../..
       dockerfile: apps/mpc-coordinator/Dockerfile
     image: soda-mpc-coordinator:latest
     environment:

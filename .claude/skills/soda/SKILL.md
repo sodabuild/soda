@@ -242,7 +242,7 @@ const sig = encodeSuiSignature(signature, compressPk(foreignPk))
 const exec = await sui.executeTransaction(txBytes, [sig])   // { digest, status: 'SUCCESS' | 'FAILURE', error }
 ```
 
-**Request on Solana via `sui_demo`** (`9LBE5dntoLRV61AM3W3ZHikgZPqZ5MLS4xCVvSxxbXug`; `demo.sh` deploys it wherever it is missing, devnet deploy pending as of 2026-09-10). Sui signs over the sender, so the program derives the signer's Sui address on-chain, BCS-encodes the same bytes, hashes, and CPIs `soda::request_signature`. The client never passes an address.
+**Request on Solana via `sui_demo`** (`9LBE5dntoLRV61AM3W3ZHikgZPqZ5MLS4xCVvSxxbXug`; `scripts/demo.sh` deploys it wherever it is missing, devnet deploy pending as of 2026-09-10). Sui signs over the sender, so the program derives the signer's Sui address on-chain, BCS-encodes the same bytes, hashes, and CPIs `soda::request_signature`. The client never passes an address.
 
 ```ts
 // sign_sui_transfer(recipient: [u8;32], amount_mist: u64, gas_payment: Vec<SuiObjectRef>, gas_price: u64,
@@ -271,7 +271,7 @@ Event: `SuiTxRequested { sig_request: Pubkey, sender: [u8;32], tx_bytes: bytes }
 
 From your own Anchor program: `soda::derive_onchain::{compute_tweak, derive_foreign_pk_xy}` give the sender; copy `sui_bcs.rs` + `blake2b.rs` from `contracts/programs/sui_demo/src/` (Solana has no blake2b syscall). CPI `request_signature(ctx, derivation_seeds, payload, chain_tag, 0)`.
 
-Audit: `pnpm verify:sui <digest>` (`apps/demo/src/verify-sui.ts`). Reference client: `apps/demo/src/demo-sui.ts`; `DEMO_CHAIN=sui-testnet ./demo.sh` runs it.
+Audit: `pnpm verify:sui <digest>` (`apps/demo/src/verify-sui.ts`). Reference client: `apps/demo/src/demo-sui.ts`; `DEMO_CHAIN=sui-testnet ./scripts/demo.sh` runs it.
 
 ## API at a glance
 
@@ -323,7 +323,7 @@ SODA ships two off-chain signer implementations. Pick whichever suits the
 user's needs — the on-chain program treats both identically.
 
 **v0 — single-key signer.** One Rust daemon (`pnpm signer`) with a 32-byte
-k256 secret in `keyshare.dev.json`. Simplest path; what `./demo.sh` uses
+k256 secret in `keyshare.dev.json`. Simplest path; what `./scripts/demo.sh` uses
 by default. Fine for hackathon-style throwaway demos. Trust assumption:
 the dev key on disk is honest.
 
@@ -336,7 +336,7 @@ pnpm mpc:dkg                  # once: distributed key generation
 pnpm mpc:up                   # docker compose: 2 nodes + coordinator
 pnpm mpc:update-committee     # once: swap on-chain group_pk
 pnpm mpc:subscribe            # subscriber loop replaces `pnpm signer`
-./demo.sh                     # signing now goes through MPC
+./scripts/demo.sh                     # signing now goes through MPC
 ```
 
 The architecture:
@@ -390,8 +390,8 @@ git clone https://github.com/derek2403/frontier
 cd frontier
 pnpm install
 cp .env.example .env  # fill SEPOLIA_RPC_URL (and SUI_FUNDER_KEY, optional, for Sui)
-./demo.sh                         # Ethereum / Base
-DEMO_CHAIN=sui-testnet ./demo.sh  # Sui
+./scripts/demo.sh                         # Ethereum / Base
+DEMO_CHAIN=sui-testnet ./scripts/demo.sh  # Sui
 ```
 
 This produces a real Sepolia tx in about 10 seconds, or a Sui testnet transfer from the wallet's derived Sui address.

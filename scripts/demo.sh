@@ -9,22 +9,22 @@
 #                                      Auto-starts validator + airdrops.
 #
 # Other usage:
-#   ./demo.sh                                — default: devnet, Aave depositETH
-#   DEMO_ACTION=borrow ./demo.sh             — Aave Pool.borrow 0.1 USDC against the aWETH
-#   DEMO_CHAIN=base-sepolia ./demo.sh        — destination chain (sepolia | base-sepolia)
-#   DEMO_CHAIN=sui-testnet ./demo.sh         — Sui: 0.001 SUI transfer from the derived
+#   ./scripts/demo.sh                                — default: devnet, Aave depositETH
+#   DEMO_ACTION=borrow ./scripts/demo.sh             — Aave Pool.borrow 0.1 USDC against the aWETH
+#   DEMO_CHAIN=base-sepolia ./scripts/demo.sh        — destination chain (sepolia | base-sepolia)
+#   DEMO_CHAIN=sui-testnet ./scripts/demo.sh         — Sui: 0.001 SUI transfer from the derived
 #                                              Sui address (sui-testnet | sui-devnet)
-#   SODA_DRY_RUN=1 ./demo.sh                 — skip the foreign-chain broadcast
-#   SOLANA_CLUSTER=local ./demo.sh           — run against local validator
+#   SODA_DRY_RUN=1 ./scripts/demo.sh                 — skip the foreign-chain broadcast
+#   SOLANA_CLUSTER=local ./scripts/demo.sh           — run against local validator
 #
 # Optional env: SEPOLIA_RPC_URL / BASE_SEPOLIA_RPC_URL, SEPOLIA_FUNDER_KEY,
 # SUI_FUNDER_KEY, SUI_TESTNET_GRAPHQL_URL, ANCHOR_WALLET, SOLANA_RPC_URL.
 
 set -euo pipefail
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."  # repo root (this script lives in scripts/)
 
 # Load .env (gitignored) for SEPOLIA_RPC_URL etc. Anything already set in the
-# environment wins: `DEMO_CHAIN=sui-testnet ./demo.sh` used to be silently
+# environment wins: `DEMO_CHAIN=sui-testnet ./scripts/demo.sh` used to be silently
 # overridden by the DEMO_CHAIN line in .env and run the EVM demo instead.
 #
 # Only the keys .env actually defines are snapshotted and put back. Replaying

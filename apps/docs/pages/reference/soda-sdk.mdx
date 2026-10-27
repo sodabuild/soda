@@ -263,7 +263,7 @@ chains sit next to their encoder in `sui.ts` (below).
 | `getChain(key)` | Resolve a `DEMO_CHAIN`-style key; unset = `sepolia`. Throws with a hint if you pass a Sui key |
 | `chainById(chainId)` | Look a chain up by the id recovered from an EIP-155 `v` |
 | `chainRpcUrl(chain, env?)` | Server-side RPC URL: `env[chain.rpcEnv]`, else `chain.defaultRpc` |
-| `chainFamily(key): "evm" \| "sui"` | The one switch that tells a caller which encoder a key needs. `demo.sh`, the verify tools and the web routes branch on it once, at the top |
+| `chainFamily(key): "evm" \| "sui"` | The one switch that tells a caller which encoder a key needs. `scripts/demo.sh`, the verify tools and the web routes branch on it once, at the top |
 
 ## Sui
 
@@ -521,7 +521,7 @@ Sui is the worked example. Everything it needed lives outside `soda`:
    blake2 syscall), derives the sender, and CPIs `soda::request_signature`
    with the payload. Its unit tests use vectors produced by `@mysten/sui`.
 5. **A client and an audit tool:** `apps/demo/src/demo-sui.ts` and
-   `verify-sui.ts`; `demo.sh` routes `DEMO_CHAIN=sui-*` to them.
+   `verify-sui.ts`; `scripts/demo.sh` routes `DEMO_CHAIN=sui-*` to them.
 
 Bitcoin follows the same shape: `bitcoin.ts` with BIP143 sighash + P2WPKH
 addresses tested against `bitcoinjs-lib`, and a `programs/btc_demo/`. The

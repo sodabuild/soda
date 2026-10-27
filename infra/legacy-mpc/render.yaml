@@ -1,3 +1,6 @@
+# LEGACY: the Render deployment was deleted (see CLAUDE.md, "Render MPC deployment").
+# Render reads a Blueprint only from the repository root; move this file back to
+# the root before reusing it.
 # SODA MPC committee on Render — two mpc-node peers plus one coordinator.
 #
 # Use this Blueprint (Render Dashboard -> New -> Blueprint) instead of

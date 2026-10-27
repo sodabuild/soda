@@ -26,7 +26,7 @@ only forwards opaque protocol bytes.
 | **mpc-coordinator** | `apps/mpc-coordinator/` | `pnpm dev` (port 8000) | Stateless orchestration. POST /sign { payloadHex, tweakHex? } drives the 4 messages between P1 and P2, applies low-s normalization, returns `{ r, s, v }`. |
 | **mpc-subscriber** | `apps/mpc-subscriber/` | `pnpm mpc:subscribe` | Subscribes to `SigRequested` on Solana, computes the tweak, calls coordinator, submits `finalize_signature`. Replaces `contracts/signer/` for MPC mode. |
 | **update_committee ix** | `contracts/programs/soda/src/instructions/update_committee.rs` | `pnpm mpc:update-committee` | Authority-gated swap of on-chain `group_pk` so we can migrate from the v0 single key without redeploying. |
-| **Docker stack** | `docker-compose.mpc.yml` | `pnpm mpc:up` | Three containers (p1, p2, coordinator) with healthchecks; mounts `apps/mpc-node/shares/` read-only. Foundation for AWS deploy. |
+| **Docker stack** | `infra/legacy-mpc/docker-compose.mpc.yml` | `pnpm mpc:up` | Three containers (p1, p2, coordinator) with healthchecks; mounts `apps/mpc-node/shares/` read-only. Foundation for AWS deploy. |
 | **AWS deploy doc** | `apps/docs/pages/deploy/aws-mpc.mdx` | — | Step-by-step deploy of two `mpc-node` instances in different regions plus a coordinator. Honest about 2-of-2 caveats. |
 
 Verified locally: DKG ceremony produces shares; both nodes report the same
@@ -51,8 +51,8 @@ build is the next-but-unbuilt step.
 | **soda program** | `contracts/programs/soda/` | (deployed) | On-chain SODA core: `init_committee`, `request_signature`, `finalize_signature` (with on-chain `secp256k1_recover`) | Live on devnet at `2YDHaX2fPXdmH14hgSJQHMJQpEHrXofzhu5hDVFgFiVd`. 7 Rust unit tests pass (G+G=2G, etc). |
 | **eth_demo program** | `contracts/programs/eth_demo/` | (deployed) | Demo harness: builds RLP, keccaks, CPIs into soda. Emits `EthTxRequested` event with the unsigned RLP for the relayer. | Live on devnet at `GfAuUesztZ98BhUZv6ymLxvxty7matXJJ4xRh5zrvPkA`. 9 Rust unit tests pass (EIP-155 mainnet vector). |
 | **soda-sdk (TS)** | `packages/soda-sdk/` | `pnpm sdk:test` | Derivation, RLP encode/decode, EIP-155 v calc, EthRpc client. Source-only ESM workspace package consumed by demo + web + relayer. | 13/13 vitest parity tests (G+G=2G + EIP-155 canonical + RLP round-trip). |
-| **CLI demo** | `apps/demo/` | `./demo.sh` (defaults to devnet) | One-shot orchestrator: validator/deploy/airdrop chores → init committee → sign on Solana → sign ECDSA → finalize on-chain → broadcast → auto-runs verify. | Multiple real Sepolia txs broadcast today; Etherscan + Solscan visible. |
-| **verify tool** | `apps/demo/src/verify.ts` | `pnpm verify <eth_hash>` | Cryptographic audit: 6 checks tying the broadcast Sepolia tx back to the SigRequest PDA on Solana. Reads only public state. | Auto-chained from `demo.sh`; manually `pnpm verify 0x…` works against any past tx. |
+| **CLI demo** | `apps/demo/` | `./scripts/demo.sh` (defaults to devnet) | One-shot orchestrator: validator/deploy/airdrop chores → init committee → sign on Solana → sign ECDSA → finalize on-chain → broadcast → auto-runs verify. | Multiple real Sepolia txs broadcast today; Etherscan + Solscan visible. |
+| **verify tool** | `apps/demo/src/verify.ts` | `pnpm verify <eth_hash>` | Cryptographic audit: 6 checks tying the broadcast Sepolia tx back to the SigRequest PDA on Solana. Reads only public state. | Auto-chained from `scripts/demo.sh`; manually `pnpm verify 0x…` works against any past tx. |
 | **Web UI** | `apps/web/` | `pnpm --filter web dev` → `http://localhost:3000` | Next.js page: derived address card, recipient input, button → SSE pipeline events → live 5-step timeline → Etherscan link. | End-to-end Sepolia tx via `/api/run` SSE this session. No wallet UI (server-driven). |
 | **Signer daemon** | `contracts/signer/` | `pnpm signer` | Rust Tokio binary: log subscribe → tweak match → k256 sign → manual `finalize_signature` ix → submit. | Picked up live `SigRequested`, signed, submitted `finalize_signature` ahead of demo.ts this session. |
 | **Relayer service** | `apps/relayer/` | `pnpm relayer:dev` | Node: `onLogs` → manual borsh decode of `EthTxRequested` + `SigCompleted` → assemble signed RLP → POST `eth_sendRawTransaction`. | Independently broadcast same Sepolia tx hash this session (idempotent with demo.ts). |
@@ -63,7 +63,7 @@ A single click in any of these surfaces produces a public Sepolia tx whose
 `from` address is controlled by no private key — only the on-chain SODA
 program:
 
-1. `./demo.sh` (CLI, canonical) — orchestrates locally; daemon + relayer
+1. `./scripts/demo.sh` (CLI, canonical) — orchestrates locally; daemon + relayer
    are optional but recommended for showing the architecture diagram.
 2. `pnpm --filter web dev` + browser button — same pipeline through the
    web UI's SSE-streaming `/api/run`.
@@ -84,7 +84,7 @@ pnpm signer
 pnpm relayer:dev
 
 # Terminal 3 — kick it off
-./demo.sh
+./scripts/demo.sh
 ```
 
 Each process logs its own work; all three independently arrive at the same
@@ -121,9 +121,9 @@ flow" below for the production-shape design:
 **Toolchain (verified installed):** Rust 1.95.0, Solana CLI 3.1.14, Anchor
 0.32.1, Node 24.10.0, pnpm 10.33.2.
 
-## The demo flow (what `./demo.sh` does today)
+## The demo flow (what `./scripts/demo.sh` does today)
 
-1. `demo.sh` (bash): start validator if not running, airdrop SOL, run
+1. `scripts/demo.sh` (bash): start validator if not running, airdrop SOL, run
    `anchor deploy` if programs aren't on-chain.
 2. `demo.ts` (Node): load Solana wallet + dev k256 signer key, init the SODA
    committee on first run.
@@ -273,7 +273,7 @@ balance, and runs the whole pipeline server-side via `/api/run` (SSE-streaming
 Solana txs + k256 signing + broadcast). Five-step Timeline animates as the SSE
 events come in.
 
-Wallet-connect UI was removed — user prefers the CLI demo (`./demo.sh`) for
+Wallet-connect UI was removed — user prefers the CLI demo (`./scripts/demo.sh`) for
 showing on stage. The web is kept as a working backup; reintroducing
 `@solana/wallet-adapter-*` so users can sign their own Solana txs is a Phase 2
 task. The current UI runs fine without Phantom because everything happens
@@ -340,12 +340,12 @@ packages/soda-sdk/               — TS source-only ESM workspace package
   src/derive.test.ts             — parity tests (G+G=2G vector)
   src/rlp.test.ts                — parity tests (EIP-155 canonical vector)
 
-demo.sh                          — cluster-aware wrapper (default: devnet)
+scripts/demo.sh                          — cluster-aware wrapper (default: devnet)
 .env                             — local-only, gitignored; SEPOLIA_RPC_URL +
                                     HELIUS_API_KEY + SOLANA_DEVNET_RPC_URL
 keyshare.dev.json                — local-only, gitignored; dev k256 SK
 .last-tx-hash                    — local-only, gitignored; written by demo.ts
-                                    so demo.sh can chain into pnpm verify
+                                    so scripts/demo.sh can chain into pnpm verify
 ```
 
 ## How to run
@@ -359,13 +359,13 @@ keyshare.dev.json                — local-only, gitignored; dev k256 SK
 **Each demo (the canonical path — CLI):**
 ```bash
 cd ~/code/frontier
-./demo.sh                                         # default: devnet, self-transfer
-DEMO_RECIPIENT=0xSomeAddress ./demo.sh            # send to specific recipient
-SODA_DRY_RUN=1 ./demo.sh                          # skip Sepolia, verify on-chain only
-SOLANA_CLUSTER=local ./demo.sh                    # against local validator (free SOL, ephemeral)
+./scripts/demo.sh                                         # default: devnet, self-transfer
+DEMO_RECIPIENT=0xSomeAddress ./scripts/demo.sh            # send to specific recipient
+SODA_DRY_RUN=1 ./scripts/demo.sh                          # skip Sepolia, verify on-chain only
+SOLANA_CLUSTER=local ./scripts/demo.sh                    # against local validator (free SOL, ephemeral)
 ```
 
-After a successful broadcast, `demo.sh` automatically runs `pnpm verify <hash>`
+After a successful broadcast, `scripts/demo.sh` automatically runs `pnpm verify <hash>`
 which prints the cryptographic audit trail (8 checks tying the Solana
 SigRequest to the broadcast Sepolia tx).
 
@@ -409,7 +409,7 @@ pnpm sdk:test                                  # 10 TS parity tests
 - **Self-transfer is the default demo recipient** so each run only burns
   gas. Override with `DEMO_RECIPIENT` for a more visually striking pitch.
 - **CLI is the canonical demo, web is backup.** The user explicitly chose
-  to demo the CLI (`./demo.sh`) on stage because it's "just a button" in the
+  to demo the CLI (`./scripts/demo.sh`) on stage because it's "just a button" in the
   UI. Don't invest UI polish unless the user reverses this. Wallet-adapter
   was removed for the same reason.
 - **`soda-sdk` is a TS-source workspace package.** It exports `.ts` files
@@ -424,10 +424,10 @@ pnpm sdk:test                                  # 10 TS parity tests
   trigger that just broadcasts the first Solana ix and watches for events.
 - **Devnet is the default cluster** (changed from local on 2026-04-29). The
   user wanted Solscan-visible txs to demo with. Local validator is still
-  supported via `SOLANA_CLUSTER=local ./demo.sh` for fast iteration. Helius
+  supported via `SOLANA_CLUSTER=local ./scripts/demo.sh` for fast iteration. Helius
   RPC URL lives in `.env` (`SOLANA_DEVNET_RPC_URL`) and is auto-loaded by
-  both `demo.sh` and `verify.ts`.
-- **`./demo.sh` chains demo → verify automatically.** demo.ts writes the
+  both `scripts/demo.sh` and `verify.ts`.
+- **`./scripts/demo.sh` chains demo → verify automatically.** demo.ts writes the
   broadcast ETH tx hash to `.last-tx-hash`; the wrapper reads it and runs
   `pnpm verify <hash>` after the demo completes (skipped on dry-run since
   there's no real broadcast). Judges/viewers see the cryptographic audit
@@ -494,14 +494,14 @@ digest   = base58(blake2b256("TransactionData::" ‖ tx bytes))    (what Suiscan
 
 | Component | Path | Run | Notes |
 |---|---|---|---|
-| **sui_demo program** | `contracts/programs/sui_demo/` | `DEMO_CHAIN=sui-testnet ./demo.sh` | `9LBE5dntoLRV61AM3W3ZHikgZPqZ5MLS4xCVvSxxbXug`, **live on devnet** (deployed 2026-09-10, authority `D5pwjGzq…`). `sign_sui_transfer(recipient, amount_mist, gas_payment[], gas_price, gas_budget, chain_tag, seeds)` builds the split-and-transfer PTB; `sign_sui_tx(kind_bytes, …)` wraps any BCS `TransactionKind` and is what the DeepBook actions use. Both derive the SENDER on-chain (Sui signs over it), BCS-encode the envelope, hash with a hand-written blake2b (`src/blake2b.rs`, no syscall exists) + the sha256 syscall, CPI `request_signature`, emit `SuiTxRequested { sig_request, sender, tx_bytes }`. 12 Rust unit tests: blake2b vectors from `@noble/hashes`, BCS/hash vectors from `@mysten/sui`. |
+| **sui_demo program** | `contracts/programs/sui_demo/` | `DEMO_CHAIN=sui-testnet ./scripts/demo.sh` | `9LBE5dntoLRV61AM3W3ZHikgZPqZ5MLS4xCVvSxxbXug`, **live on devnet** (deployed 2026-09-10, authority `D5pwjGzq…`). `sign_sui_transfer(recipient, amount_mist, gas_payment[], gas_price, gas_budget, chain_tag, seeds)` builds the split-and-transfer PTB; `sign_sui_tx(kind_bytes, …)` wraps any BCS `TransactionKind` and is what the DeepBook actions use. Both derive the SENDER on-chain (Sui signs over it), BCS-encode the envelope, hash with a hand-written blake2b (`src/blake2b.rs`, no syscall exists) + the sha256 syscall, CPI `request_signature`, emit `SuiTxRequested { sig_request, sender, tx_bytes }`. 12 Rust unit tests: blake2b vectors from `@noble/hashes`, BCS/hash vectors from `@mysten/sui`. |
 | **SDK Sui module** | `packages/soda-sdk/src/sui.ts` | `pnpm sdk:test` | Registry (`SUI_CHAINS`, `getSuiChain`, `suiGraphqlUrl`), address, envelope encoder, hashing, signature envelope, local-key helpers, `SuiGraphQl` client, faucet helper. `chains.ts` gained `chainFamily(key)`. |
 | **SDK PTB encoder** | `packages/soda-sdk/src/sui-ptb.ts` | `pnpm sdk:test` | A small BCS encoder for programmable blocks (inputs, commands, arguments, Move type tags). The Sui counterpart of `rlp.ts`: it exists so the published package keeps its `@noble/*`-only dependency list instead of shipping `@mysten/sui`. |
 | **SDK DeepBook module** | `packages/soda-sdk/src/deepbook.ts` | `pnpm sdk:test` | The Sui counterpart of `aave.ts`: pool/coin constants, `deepbookBuyBaseKind`, `deepbookSellBaseKind`, `deepbookQuoteKind` + `decodeDeepbookQuote` + `quoteRejection`, slippage and formatting. |
 | **CLI demo** | `apps/demo/src/demo-sui.ts` | `pnpm demo:sui` | Mirrors `demo.ts`: derive → fund (`SUI_FUNDER_KEY` sponsor, else faucet) → gas coins + reference gas price → quote → build/simulate → `sign_sui_tx` → sign → `finalize_signature` → `executeTransaction`. `DEMO_ACTION=swap` (default) `| sell | transfer`. |
 | **verify tool** | `apps/demo/src/verify-sui.ts` | `pnpm verify:sui <digest>` | Same audit as `verify.ts` for a Sui digest; `VERIFY_REQUESTER=<pubkey>` audits a web (Phantom) run. Resolves its network from `DEMO_CHAIN` only when that names a Sui chain, else `SUI_CHAIN`, else testnet — the repo's `.env` sets `DEMO_CHAIN=base-sepolia`, which used to make the bare command throw. |
 | **relayer** | `apps/relayer/` | `pnpm relayer:dev` | Second assembler path: caches `SuiTxRequested`, and on `SigCompleted` recovers the pubkey from (payload, sig, recovery_id), checks it hashes to the cached sender, and submits via `executeTransaction`. `SUI_CHAIN` picks the network. Skips Sui with a warning if `contracts/target/idl/sui_demo.json` is absent. |
-| **demo.sh** | `demo.sh` | `DEMO_CHAIN=sui-*` | Routes sui-* keys to `demo:sui` / `verify:sui` and only deploys the program that is missing (`anchor deploy --program-name`). Values set on the command line now beat `.env`, and only the keys `.env` defines are snapshotted (replaying a whole `export -p` aborts under `set -e` in a shell that exports readonly `SHELLOPTS`). |
+| **scripts/demo.sh** | `scripts/demo.sh` | `DEMO_CHAIN=sui-*` | Routes sui-* keys to `demo:sui` / `verify:sui` and only deploys the program that is missing (`anchor deploy --program-name`). Values set on the command line now beat `.env`, and only the keys `.env` defines are snapshotted (replaying a whole `export -p` aborts under `set -e` in a shell that exports readonly `SHELLOPTS`). |
 
 ### DeepBook: what the Sui demo actually does
 
@@ -578,7 +578,7 @@ Whichever key ends up on-chain, its address needs funding before a demo.
 
 ### Historical record of the AWS deploy
 
-The Lindell '17 2-of-2 committee from `aws.md` is now running on AWS. End-to-end
+The Lindell '17 2-of-2 committee from `docs/operations/aws-mpc.md` is now running on AWS. End-to-end
 signature test confirmed working: a `POST /sign` to the coordinator returns a valid
 `{r, s, v}` in ~400ms after the cold JIT warmup.
 
@@ -602,7 +602,7 @@ PEM files (`~/Downloads/`): `soda-mpc-node-p1.pem`, `soda-mpc-node-p2.pem`,
 - node-p1 SG: inbound TCP 8001 from `172.31.89.14/32` (coordinator's private IP)
 - node-p2 SG: inbound TCP 8002 from `172.31.89.14/32` (coordinator's private IP)
 
-Same-region (no cross-region). `aws.md` notes cross-region is recommended for the
+Same-region (no cross-region). `docs/operations/aws-mpc.md` notes cross-region is recommended for the
 "two operators in different failure domains" claim. The hackathon trade-off was
 latency over geographic diversity.
 
@@ -710,8 +710,8 @@ Aave's own view of the derived address.
 
 | Action | Contract call | Gas (measured → limit) | CLI | Web |
 |---|---|---|---|---|
-| deposit (default) | `WrappedTokenGatewayV3.depositETH`, 0.0001 ETH | 229,989 → 300k | `./demo.sh` | step 3, left button |
-| borrow | `Pool.borrow(USDC, 0.1, variable, 0, derived)` | 288,022 → 400k | `DEMO_ACTION=borrow ./demo.sh` | step 3, right button |
+| deposit (default) | `WrappedTokenGatewayV3.depositETH`, 0.0001 ETH | 229,989 → 300k | `./scripts/demo.sh` | step 3, left button |
+| borrow | `Pool.borrow(USDC, 0.1, variable, 0, derived)` | 288,022 → 400k | `DEMO_ACTION=borrow ./scripts/demo.sh` | step 3, right button |
 
 USDC on Base Sepolia's Aave market is Aave's test token
 `0xba50Cd2A…`, NOT Circle's `0x036C…` (which is not a reserve there).
@@ -725,7 +725,7 @@ reason instead of costing two Solana txs and burned gas.
 Verified 2026-09-09 on Base Sepolia from the laptop wallet's derived address
 `0xd552…1ce5`: borrow tx `0x732af17f…` succeeded, `pnpm verify` passed all
 checks, and Aave then reported 0.1 USDC held + 0.1 vUSDC debt against
-~$0.75 of aWETH collateral. `demo.sh`'s SOL gate now only demands 5 SOL when
+~$0.75 of aWETH collateral. `scripts/demo.sh`'s SOL gate now only demands 5 SOL when
 a deploy is needed (0.05 otherwise).
 
 ## Railway deployment — added 2026-09-18 (CURRENT)
@@ -842,7 +842,7 @@ pins the current values.
 
 Second deployment target for the same three services, alongside AWS. Free
 plan, no servers to manage. See `apps/docs/pages/deploy/render-mpc.mdx` for
-the click-by-click steps and `render.yaml` for the Blueprint.
+the click-by-click steps and `infra/legacy-mpc/render.yaml` for the Blueprint.
 
 ### What changed in the code
 
@@ -961,7 +961,7 @@ Run it with:
 ```bash
 MPC_COORDINATOR_URL=https://soda-mpc-coordinator-production.up.railway.app \
 MPC_COORDINATOR_TOKEN=<coordinator token> \
-./demo.sh
+./scripts/demo.sh
 ```
 
 Two consequences worth remembering:

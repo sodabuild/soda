@@ -99,7 +99,7 @@ Sepolia for the EVM rows, Sui testnet for the Sui ones.
 | Act | Aave V3 | `depositETH` puts ETH into Aave; the Solana wallet's address receives aWETH and earns interest. `Pool.borrow` takes USDC out against that collateral. |
 | Audit | `pnpm verify <hash>` | Anyone can tie the broadcast transaction back to the Solana request in eight checks, using only public state. |
 | Own it from a program | Solana, `vault_demo` → `soda` | `pnpm demo:vault`: a PDA, not a wallet, is the requester, so the address belongs to the program. The vault records one allowed recipient and refuses to sign a payment to anyone else. |
-| Sui | Solana, `sui_demo` → `soda`, then Sui testnet | `DEMO_CHAIN=sui-testnet ./demo.sh`: the program derives the wallet's Sui address, BCS-encodes the exact Sui transaction from it on-chain, commits `sha256(blake2b(intent ‖ tx))`, and the same `finalize_signature` verifies the committee's signature. The signed bytes go to Sui over GraphQL; `pnpm verify:sui <digest>` audits the result. The encoders are held byte-for-byte against `@mysten/sui` in tests. |
+| Sui | Solana, `sui_demo` → `soda`, then Sui testnet | `DEMO_CHAIN=sui-testnet ./scripts/demo.sh`: the program derives the wallet's Sui address, BCS-encodes the exact Sui transaction from it on-chain, commits `sha256(blake2b(intent ‖ tx))`, and the same `finalize_signature` verifies the committee's signature. The signed bytes go to Sui over GraphQL; `pnpm verify:sui <digest>` audits the result. The encoders are held byte-for-byte against `@mysten/sui` in tests. |
 | Act (Sui) | DeepBook V3 | The derived address trades on Sui's on-chain central limit order book: `swap_exact_quote_for_base` buys DEEP with SUI, `swap_exact_base_for_quote` sells it back. The pool is whitelisted, so fees are zero and no DEEP is needed to trade. |
 
 A concrete run signed by the live committee (2026-09-18): the Solana wallet
@@ -441,13 +441,13 @@ up the request and signs it.
 cryptographic audit of the transaction it just broadcast:
 
 ```bash
-./demo.sh                          # Aave depositETH, 0.0001 ETH
-DEMO_ACTION=borrow ./demo.sh       # Aave Pool.borrow, 0.1 USDC against the aWETH
-DEMO_CHAIN=base-sepolia ./demo.sh  # sepolia | base-sepolia
-DEMO_CHAIN=sui-testnet ./demo.sh   # Sui: buy DEEP on DeepBook (sui-testnet | sui-devnet)
+./scripts/demo.sh                          # Aave depositETH, 0.0001 ETH
+DEMO_ACTION=borrow ./scripts/demo.sh       # Aave Pool.borrow, 0.1 USDC against the aWETH
+DEMO_CHAIN=base-sepolia ./scripts/demo.sh  # sepolia | base-sepolia
+DEMO_CHAIN=sui-testnet ./scripts/demo.sh   # Sui: buy DEEP on DeepBook (sui-testnet | sui-devnet)
 pnpm demo:vault                    # a PROGRAM owns the address, and may pay only one recipient
-DEMO_ACTION=sell DEMO_CHAIN=sui-testnet ./demo.sh    # sell that DEEP back for SUI
-DEMO_ACTION=transfer DEMO_CHAIN=sui-testnet ./demo.sh  # plain SUI transfer
+DEMO_ACTION=sell DEMO_CHAIN=sui-testnet ./scripts/demo.sh    # sell that DEEP back for SUI
+DEMO_ACTION=transfer DEMO_CHAIN=sui-testnet ./scripts/demo.sh  # plain SUI transfer
 ```
 
 The Sui run funds the derived address from `SUI_FUNDER_KEY` or the public
@@ -495,12 +495,22 @@ packages/soda-sdk/             TypeScript: derivation, RLP, chain registry, Aave
                                sui.ts (address, BCS, hashes, signature envelope, GraphQL client)
 apps/demo/                     CLI demos (demo.ts, demo-sui.ts) and the audit tools (verify.ts, verify-sui.ts)
 apps/web/                      Next.js app at sodalabs.org: Phantom → Solana request → committee → broadcast
-apps/mpc-node/                 threshold-ECDSA node (Lindell '17), on-chain authorisation
-apps/mpc-coordinator/          drives the signing protocol between the two nodes
-apps/mpc-subscriber/           watches SigRequested, asks the committee, finalizes
+apps/mpc-node/                 legacy MPC signer: threshold-ECDSA node (Lindell '17), still deployed on Railway
+apps/mpc-coordinator/          legacy MPC signer: drives the signing protocol between the two nodes
+apps/mpc-subscriber/           legacy MPC signer: watches SigRequested, asks the committee, finalizes
 apps/relayer/                  event subscriber that assembles and broadcasts signed txs (EVM RLP, Sui BCS)
 apps/docs/                     the documentation site
+research/alpenglow-sim/        Alpenglow light client work: contracts, certificate checks, inclusion proof
+scripts/                       demo.sh (the CLI demo) and deploy / maintenance scripts
+infra/legacy-mpc/              legacy MPC hosting files (Docker Compose, all-in-one image, Render blueprint)
+docs/operations/               operations notes (AWS MPC deploy, Solami RPC)
+docs/sdk-quickstart.md         install and first call with @soda-sdk/core
+docs/archive/                  superseded documents
 ```
+
+New experiments (ZK proofs, receipt roots, validator-set commitments, chain
+compatibility) live in [sodabuild/research](https://github.com/sodabuild/research).
+Working code moves into this repository through a pull request once it is ready.
 
 ## Status
 

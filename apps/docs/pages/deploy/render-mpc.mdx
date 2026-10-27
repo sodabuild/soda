@@ -208,7 +208,7 @@ MPC_COORDINATOR_URL=https://soda-mpc-coordinator.onrender.com
 MPC_COORDINATOR_TOKEN=<coordinator token>
 ```
 
-Set both in the repo `.env` for `pnpm mpc:subscribe` and `./demo.sh`, and in
+Set both in the repo `.env` for `pnpm mpc:subscribe` and `./scripts/demo.sh`, and in
 the Vercel project environment for `apps/web`.
 
 ### Delete the local shares
@@ -241,7 +241,7 @@ start of every `/sign`. Set `MPC_PREWARM_PEERS=0` to turn that off.
 
 ## Single-service mode
 
-`Dockerfile.mpc-aio` runs p1, p2 and the coordinator in one container, under
+`infra/legacy-mpc/Dockerfile.mpc-aio` runs p1, p2 and the coordinator in one container, under
 the supervisor at `scripts/mpc-all-in-one.mjs`. You then create one Render
 web service instead of three.
 
@@ -261,7 +261,7 @@ per-boot token that the nodes require, so you never configure one.
 |---|---|
 | Name | `soda-mpc` |
 | Language | `Docker` |
-| Dockerfile Path | `Dockerfile.mpc-aio` |
+| Dockerfile Path | `infra/legacy-mpc/Dockerfile.mpc-aio` |
 | Instance Type | `Free` |
 | Health Check Path | `/health` |
 

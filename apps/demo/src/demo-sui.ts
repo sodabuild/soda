@@ -80,7 +80,7 @@ import {
   type SuiObjectRef,
 } from "@soda-sdk/core";
 
-// DEMO_CHAIN selects the Sui network (sui-testnet | sui-devnet). demo.sh
+// DEMO_CHAIN selects the Sui network (sui-testnet | sui-devnet). scripts/demo.sh
 // routes here for any sui-* key; the EVM keys go to demo.ts.
 const CHAIN = getSuiChain(process.env.DEMO_CHAIN);
 const sui = new SuiGraphQl(suiGraphqlUrl(CHAIN));
@@ -347,7 +347,7 @@ async function buildSell(ctx: BuildContext): Promise<BuiltAction> {
   if (held === 0n) {
     throw new Error(
       `the derived address holds no ${pool.base.symbol} to sell — run the swap action first ` +
-        `(DEMO_ACTION=swap DEMO_CHAIN=${CHAIN.key} ./demo.sh)`,
+        `(DEMO_ACTION=swap DEMO_CHAIN=${CHAIN.key} ./scripts/demo.sh)`,
     );
   }
   // Every coin object is spent whole, so the sale size is what is held.

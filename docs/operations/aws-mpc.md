@@ -319,13 +319,13 @@ Per-message Paillier crypto is ~50 ms; the rest is network.
 MPC_COORDINATOR_URL=http://$COORD_IP:8000 pnpm mpc:subscribe
 
 # In another terminal, kick off the demo as usual
-./demo.sh
+./scripts/demo.sh
 ```
 
 Full flow:
 
 ```
-./demo.sh (laptop)
+./scripts/demo.sh (laptop)
    │
    ▼
 Solana devnet — SigRequested fires
@@ -446,7 +446,7 @@ aws ec2 delete-security-group --group-id sg-coordxxx --region us-east-1
 ## Appendix: single-EC2 quick dev test (not for any real demo)
 
 For very early local-equivalent testing on a single EC2 with all three
-containers via `docker-compose.mpc.yml`:
+containers via `infra/legacy-mpc/docker-compose.mpc.yml`:
 
 ```bash
 ssh ubuntu@<single-ec2>
@@ -456,7 +456,7 @@ cd frontier
 mkdir -p apps/mpc-node/shares
 # scp both share files into apps/mpc-node/shares/ (defeats MPC isolation —
 # only do this for one-off dev tests)
-docker compose -f docker-compose.mpc.yml up -d --build
+docker compose -f infra/legacy-mpc/docker-compose.mpc.yml up -d --build
 ```
 
 This is **not** an MPC deployment — both shares are on the same host, so

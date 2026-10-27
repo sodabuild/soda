@@ -31,11 +31,11 @@ soda::request_signature(
 
 <Callout type="info">
   v0 is live on Solana devnet with Ethereum Sepolia and Base Sepolia, and the
-  same pipeline has moved SUI on Sui testnet. Run `./demo.sh` from the repo
+  same pipeline has moved SUI on Sui testnet. Run `./scripts/demo.sh` from the repo
   to produce a real Sepolia transaction signed by a Solana program, or
-  `DEMO_CHAIN=sui-testnet ./demo.sh` for a Sui transfer from the same
+  `DEMO_CHAIN=sui-testnet ./scripts/demo.sh` for a Sui transfer from the same
   wallet's Sui address (the `sui_demo` caller's devnet deploy is pending;
-  `demo.sh` deploys it wherever it is missing).
+  `scripts/demo.sh` deploys it wherever it is missing).
 </Callout>
 
 <Callout type="warning">
@@ -53,7 +53,7 @@ soda::request_signature(
   [`http://32.198.7.34:8000`](http://32.198.7.34:8000/health) drives the
   4-message protocol. Neither node sees the joint secret. The on-chain
   `Committee.group_pk` is migrated to the AWS joint key, so the same
-  `./demo.sh` now signs through MPC end-to-end. See
+  `./scripts/demo.sh` now signs through MPC end-to-end. See
   [Architecture](/architecture#v05-real-lindell-17-2-of-2-mpc-ecdsa)
   and the [MPC protocol walkthrough](/concepts/mpc-protocol).
 </Callout>
