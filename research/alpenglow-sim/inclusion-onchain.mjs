@@ -15,7 +15,7 @@ const env = fs.readFileSync(new URL('../../.env', import.meta.url), 'utf8')
 const account = privateKeyToAccount(`0x${env.match(/^SEPOLIA_FUNDER_KEY=(.*)$/m)[1].trim().replace(/^0x/, '')}`)
 const pub = createPublicClient({ chain: baseSepolia, transport: http('https://sepolia.base.org') })
 const wallet = createWalletClient({ account, chain: baseSepolia, transport: http('https://sepolia.base.org') })
-const C = JSON.parse(fs.readFileSync(new URL('./out/AlpenglowSim.json', import.meta.url), 'utf8')).ShredInclusion
+const C = JSON.parse(fs.readFileSync(new URL('../../contracts/evm/out/AlpenglowSim.json', import.meta.url), 'utf8')).ShredInclusion
 const P = JSON.parse(fs.readFileSync(new URL('./out/inclusion-proof.json', import.meta.url), 'utf8'))
 if (P.shreds.length !== 1) throw new Error('this check handles a transaction inside one shred')
 

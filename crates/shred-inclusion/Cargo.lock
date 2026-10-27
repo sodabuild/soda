@@ -2766,16 +2766,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2a0813be332553f857953298749fa19549e8b61b80589757c29b4e2a804fa9c6"
 
 [[package]]
-name = "inclusion"
-version = "0.1.0"
-dependencies = [
- "hex",
- "serde_json",
- "sha2 0.10.9",
- "solana-ledger",
-]
-
-[[package]]
 name = "indexmap"
 version = "2.14.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4687,6 +4677,16 @@ name = "shlex"
 version = "2.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f8fadd59c855ef2080decdef8ff161eb6661b86933c9d82e5ba29dc602a55aba"
+
+[[package]]
+name = "shred-inclusion"
+version = "0.1.0"
+dependencies = [
+ "hex",
+ "serde_json",
+ "sha2 0.10.9",
+ "solana-ledger",
+]
 
 [[package]]
 name = "signal-hook-registry"

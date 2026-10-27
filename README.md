@@ -500,8 +500,10 @@ apps/mpc-coordinator/          legacy MPC signer: drives the signing protocol be
 apps/mpc-subscriber/           legacy MPC signer: watches SigRequested, asks the committee, finalizes
 apps/relayer/                  event subscriber that assembles and broadcasts signed txs (EVM RLP, Sui BCS)
 apps/docs/                     the documentation site
-research/alpenglow-sim/        Alpenglow light client work: contracts, certificate checks, inclusion proof
-scripts/                       demo.sh (the CLI demo) and deploy / maintenance scripts
+contracts/evm/                 Alpenglow light client, SODA account and factory, ShredInclusion (Solidity)
+crates/shred-inclusion/        Rust tool that builds shred inclusion proofs from a validator ledger
+research/alpenglow-sim/        Alpenglow prototype experiments (moving to sodabuild/research)
+scripts/                       demo.sh (CLI demo), alpenglow-local-node.sh (local Alpenglow node), deploy scripts
 infra/legacy-mpc/              legacy MPC hosting files (Docker Compose, all-in-one image, Render blueprint)
 docs/operations/               operations notes (AWS MPC deploy, Solami RPC)
 docs/sdk-quickstart.md         install and first call with @soda-sdk/core

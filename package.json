@@ -27,7 +27,9 @@
     "mpc:update-committee": "pnpm --filter mpc-node exec tsx scripts/update-committee.ts ../../apps/mpc-node/shares/share-p1.json",
     "mpc:subscribe": "pnpm --filter mpc-subscriber dev",
     "demo:vault": "pnpm --filter demo demo:vault",
-    "mpc:test": "pnpm --filter mpc-node test"
+    "mpc:test": "pnpm --filter mpc-node test",
+    "evm:compile": "npm --prefix contracts/evm ci --no-audit --no-fund && npm --prefix contracts/evm run compile",
+    "alpenglow:node": "bash scripts/alpenglow-local-node.sh"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

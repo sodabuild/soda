@@ -12,8 +12,8 @@ import { execFileSync } from 'node:child_process'
 import { Connection, Keypair, PublicKey, Transaction, TransactionInstruction } from '@solana/web3.js'
 import { RPC, collectFooterCerts } from './local-cert.mjs'
 
-const TOOL = process.env.INCLUSION_TOOL || new URL('./inclusion/target/release/inclusion', import.meta.url).pathname
-const LEDGER = new URL('./node/ledger', import.meta.url).pathname
+const TOOL = process.env.INCLUSION_TOOL || new URL('../../crates/shred-inclusion/target/release/shred-inclusion', import.meta.url).pathname
+const LEDGER = new URL('../../.alpenglow-node/ledger', import.meta.url).pathname
 const MEMO = new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr')
 
 const owner = Keypair.fromSecretKey(Uint8Array.from(JSON.parse(fs.readFileSync(`${os.homedir()}/.config/solana/id.json`, 'utf8'))))

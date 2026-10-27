@@ -35,7 +35,7 @@ const funder = privateKeyToAccount(`0x${env.match(/^SEPOLIA_FUNDER_KEY=(.*)$/m)[
 const BASE = 'https://sepolia.base.org'
 const pub = createPublicClient({ chain: baseSepolia, transport: http(BASE) })
 const wallet = createWalletClient({ account: funder, chain: baseSepolia, transport: http(BASE) })
-const C = JSON.parse(fs.readFileSync(new URL('./out/AlpenglowSim.json', import.meta.url), 'utf8'))
+const C = JSON.parse(fs.readFileSync(new URL('../../contracts/evm/out/AlpenglowSim.json', import.meta.url), 'utf8'))
 const fp = (x) => x.toString(16).padStart(128, '0')
 const g1 = (P) => { const a = P.toAffine(); return `0x${fp(a.x)}${fp(a.y)}` }
 const g2 = (bytes) => { const a = bls.G2.Point.fromBytes(bytes).toAffine(); return `0x${fp(a.x.c0)}${fp(a.x.c1)}${fp(a.y.c0)}${fp(a.y.c1)}` }

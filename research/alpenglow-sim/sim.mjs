@@ -34,7 +34,7 @@ const funderKey = env.match(/^SEPOLIA_FUNDER_KEY=(.*)$/m)[1].trim()
 const account = privateKeyToAccount(funderKey.startsWith('0x') ? funderKey : `0x${funderKey}`)
 const pub = createPublicClient({ chain: baseSepolia, transport: http('https://sepolia.base.org') })
 const wallet = createWalletClient({ account, chain: baseSepolia, transport: http('https://sepolia.base.org') })
-const C = JSON.parse(fs.readFileSync(new URL('./out/AlpenglowSim.json', import.meta.url), 'utf8'))
+const C = JSON.parse(fs.readFileSync(new URL('../../contracts/evm/out/AlpenglowSim.json', import.meta.url), 'utf8'))
 
 // ---- encoding (EIP-2537: each Fp element is 64 bytes, big endian) ----
 const fp = (x) => x.toString(16).padStart(128, '0')

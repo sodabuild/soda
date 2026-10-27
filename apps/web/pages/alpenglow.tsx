@@ -360,7 +360,7 @@ export default function AlpenglowPage() {
               {local && !localUp ? (
                 <div className="mb-3 text-xs text-rose-300">
                   ● Local Alpenglow node not reachable on {LOCAL_RPC}. Start it with
-                  research/alpenglow-sim/start-local-node.sh.
+                  scripts/alpenglow-local-node.sh.
                 </div>
               ) : null}
               <h1 className="text-3xl font-semibold tracking-tight">SODA with Alpenglow: no MPC in the path.</h1>

@@ -7,7 +7,7 @@ import { createPublicClient, http } from 'viem'
 import { baseSepolia } from 'viem/chains'
 import { readValidatorSet, collectFooterCerts } from './local-cert.mjs'
 
-const C = JSON.parse(fs.readFileSync(new URL('./out/AlpenglowSim.json', import.meta.url), 'utf8')).AlpenglowLightClient
+const C = JSON.parse(fs.readFileSync(new URL('../../contracts/evm/out/AlpenglowSim.json', import.meta.url), 'utf8')).AlpenglowLightClient
 const dep = JSON.parse(fs.readFileSync(new URL('./out/local-deployment.json', import.meta.url), 'utf8'))
 const env = fs.readFileSync(new URL('../../.env', import.meta.url), 'utf8')
 const pub = createPublicClient({ chain: baseSepolia, transport: http('https://sepolia.base.org') })

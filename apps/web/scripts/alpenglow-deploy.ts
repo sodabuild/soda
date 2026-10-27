@@ -3,7 +3,7 @@
 //   cd apps/web && npx tsx scripts/alpenglow-deploy.ts
 //
 // Reads SEPOLIA_FUNDER_KEY from the repo-root .env, compiles nothing (it uses
-// research/alpenglow-sim/out/AlpenglowSim.json), deploys SolanaLightClient
+// contracts/evm/out/AlpenglowSim.json), deploys SolanaLightClient
 // and SodaAccountFactory, loads the simulated validator set, and writes the
 // addresses to lib/alpenglow/deployment.json for the page and API routes.
 
@@ -24,7 +24,7 @@ if (!funderKey) throw new Error("SEPOLIA_FUNDER_KEY missing from .env");
 const rpc = get("ALPENGLOW_BASE_RPC_URL") || "https://sepolia.base.org";
 
 const C = JSON.parse(
-  fs.readFileSync(path.join(root, "research/alpenglow-sim/out/AlpenglowSim.json"), "utf8"),
+  fs.readFileSync(path.join(root, "contracts/evm/out/AlpenglowSim.json"), "utf8"),
 );
 const account = privateKeyToAccount(`0x${funderKey.replace(/^0x/, "")}` as Hex);
 const pub = createPublicClient({ chain: baseSepolia, transport: http(rpc) });

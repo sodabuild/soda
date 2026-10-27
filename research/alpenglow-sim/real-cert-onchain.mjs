@@ -17,7 +17,7 @@ const RPC = 'https://sepolia.base.org'
 const account = privateKeyToAccount(`0x${key}`)
 const pub = createPublicClient({ chain: baseSepolia, transport: http(RPC) })
 const wallet = createWalletClient({ account, chain: baseSepolia, transport: http(RPC) })
-const C = JSON.parse(fs.readFileSync(new URL('./out/AlpenglowSim.json', import.meta.url), 'utf8')).AlpenglowCertCheck
+const C = JSON.parse(fs.readFileSync(new URL('../../contracts/evm/out/AlpenglowSim.json', import.meta.url), 'utf8')).AlpenglowCertCheck
 const cert = JSON.parse(fs.readFileSync(new URL('./out/real-cert.json', import.meta.url), 'utf8'))
 
 const fp = (x) => x.toString(16).padStart(128, '0')

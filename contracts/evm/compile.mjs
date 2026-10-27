@@ -1,8 +1,9 @@
-// Compiles contracts/AlpenglowSim.sol into out/AlpenglowSim.json.
+// Compiles AlpenglowSim.sol into out/AlpenglowSim.json (git-ignored).
+// Run with: pnpm evm:compile
 import fs from 'node:fs'
 import solc from 'solc'
 
-const source = fs.readFileSync(new URL('./contracts/AlpenglowSim.sol', import.meta.url), 'utf8')
+const source = fs.readFileSync(new URL('./AlpenglowSim.sol', import.meta.url), 'utf8')
 const input = {
   language: 'Solidity',
   sources: { 'AlpenglowSim.sol': { content: source } },

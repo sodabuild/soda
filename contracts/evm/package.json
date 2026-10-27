@@ -1,0 +1,11 @@
+{
+  "name": "soda-evm-contracts",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "compile": "node compile.mjs"
+  },
+  "dependencies": {
+    "solc": "0.8.28"
+  }
+}

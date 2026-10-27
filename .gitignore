@@ -48,3 +48,8 @@ Thumbs.db
 # MPC signing shares
 apps/mpc-node/shares/
 share-p*.json
+
+# Local Alpenglow node: Agave binaries, Yellowstone plugin, ledger
+.alpenglow-node/
+# Compiled Solidity output (pnpm evm:compile)
+contracts/evm/out/
