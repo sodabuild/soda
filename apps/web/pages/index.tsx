@@ -322,6 +322,8 @@ export default function Home() {
                 `${CHAIN.key}) but the server is configured for "${d.chain}". ` +
                 `Set both to the same chain and redeploy.`,
             );
+          } else if (MPC_RETIRED) {
+            // No signer or payer is expected while the demo is retired.
           } else if (
             d.signer?.mode === "dev-key" &&
             d.signer.source === "missing"
@@ -1176,7 +1178,7 @@ const data  = ${
                 href="/alpenglow"
                 className="rounded-md px-3 py-1 text-zinc-400 hover:text-zinc-100"
               >
-                Alpenglow · testnet
+                Alpenglow · coming soon
               </a>
             </nav>
           </div>

@@ -29,6 +29,7 @@ import { QRCodeSVG } from "qrcode.react";
 import StepCard, { type StepState } from "@/components/StepCard";
 import {
   ALPENGLOW,
+  ALPENGLOW_COMING_SOON,
   MEMO_PROGRAM_ID,
   NON_SIGNER_CHOICES,
   type AccountState,
@@ -214,11 +215,13 @@ export default function AlpenglowPage() {
   const elapsed = useTicker(busy, startedAt);
 
   useEffect(() => {
+    if (ALPENGLOW_COMING_SOON) return;
     api<{ owner: string | null }>("demo-owner").then((r) => setDemoOwner(r.owner)).catch(() => {});
   }, []);
 
   // Our local node: is it up, and is its certificate stream flowing?
   useEffect(() => {
+    if (ALPENGLOW_COMING_SOON) return;
     let stop = false;
     const tick = () =>
       api<LocalStatus>("local-status")
@@ -234,7 +237,7 @@ export default function AlpenglowPage() {
 
 
   const refresh = useCallback(async () => {
-    if (!owner) return setState(null);
+    if (ALPENGLOW_COMING_SOON || !owner) return setState(null);
     try {
       // Drop answers for an owner that is no longer selected: a slow lookup
       // for the previous key must not overwrite the current one.
@@ -336,7 +339,7 @@ export default function AlpenglowPage() {
               <Link href="/" className="rounded-md px-3 py-1 text-zinc-400 hover:text-zinc-100">
                 MPC · retired
               </Link>
-              <span className="rounded-md bg-zinc-800 px-3 py-1 text-zinc-100">Alpenglow · testnet</span>
+              <span className="rounded-md bg-zinc-800 px-3 py-1 text-zinc-100">Alpenglow · coming soon</span>
             </nav>
           </div>
           <a
@@ -357,7 +360,7 @@ export default function AlpenglowPage() {
               {/* The page runs on our local Alpenglow node only. The devnet path
                   (simulated certificate) stays in the code; set `net` to "devnet"
                   to bring it back. Only a down node is worth a line here. */}
-              {local && !localUp ? (
+              {!ALPENGLOW_COMING_SOON && local && !localUp ? (
                 <div className="mb-3 text-xs text-rose-300">
                   ● Local Alpenglow node not reachable on {LOCAL_RPC}. Start it with
                   scripts/alpenglow-local-node.sh.
@@ -371,6 +374,16 @@ export default function AlpenglowPage() {
               </p>
             </div>
 
+            {ALPENGLOW_COMING_SOON ? (
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900 px-6 py-8 text-center">
+                <div className="text-2xl font-semibold text-zinc-100">Coming soon</div>
+                <p className="mx-auto mt-2 max-w-md text-sm text-zinc-400">
+                  We are building the Alpenglow light client for real use. The interactive demo returns when it is
+                  ready.
+                </p>
+              </div>
+            ) : (
+            <>
             {error ? (
               <div className="rounded-lg border border-rose-900 bg-rose-950/40 px-4 py-3 text-sm text-rose-200">
                 {error}
@@ -609,6 +622,8 @@ export default function AlpenglowPage() {
                 </div>
               ) : null}
             </StepCard>
+            </>
+            )}
           </main>
 
         </div>

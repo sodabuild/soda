@@ -7,11 +7,11 @@ export default function MpcRetiredNotice() {
       <div className="font-medium text-zinc-100">MPC demo retired</div>
       <p className="mt-1 text-zinc-400">
         The MPC signing committee no longer runs, so this page cannot sign.
-        SODA now proves Solana approvals with Alpenglow certificates instead.{" "}
+        SODA is moving to Alpenglow certificates instead. The{" "}
         <Link href="/alpenglow" className="text-zinc-100 underline">
-          See the Alpenglow demo
-        </Link>
-        .
+          Alpenglow demo
+        </Link>{" "}
+        is coming soon.
       </p>
     </div>
   );

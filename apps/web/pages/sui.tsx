@@ -336,7 +336,9 @@ export default function SuiDemo() {
         }) => {
           if (d.groupPkHex) setGroupPkHex(d.groupPkHex);
           else if (d.error) setLoadError(d.error);
-          if (d.signer?.mode === "dev-key" && d.signer.source === "missing") {
+          if (MPC_RETIRED) {
+            // No signer or payer is expected while the demo is retired.
+          } else if (d.signer?.mode === "dev-key" && d.signer.source === "missing") {
             setConfigError(
               "The server has no signer key: neither SODA_SIGNER_KEY_HEX nor " +
                 "keyshare.dev.json is present, so /api/sui/finalize cannot sign. " +

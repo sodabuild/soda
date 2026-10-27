@@ -132,3 +132,9 @@ export type ExecuteResponse = {
   tx: EvmTxReport;
   aWethWei: string;
 };
+
+// The public demo is paused until the light client is ready for real use.
+// With this on, the page shows "Coming soon" instead of the demo steps, and
+// the API refuses every action that signs or sends a transaction. The code
+// stays for future work. Set it to false to bring the demo back.
+export const ALPENGLOW_COMING_SOON = true;

@@ -739,8 +739,16 @@ are kept. Only `soda-web` runs. The project has no volumes or buckets.
 In `apps/web`, `lib/mpc-retired.ts` sets `MPC_RETIRED = true`. The MPC pages
 show "MPC demo retired" instead of the sign buttons, and `/api/run`,
 `/api/finalize`, `/api/fund`, `/api/sui/finalize` and `/api/sui/fund` answer
-410. `/alpenglow` still works. Do not spend time restoring MPC. The
-`SODA_DRY_RUN=1` demo check is not applicable any more.
+410. Do not spend time restoring MPC. The `SODA_DRY_RUN=1` demo check is not
+applicable any more.
+
+The Alpenglow demo is paused too. `ALPENGLOW_COMING_SOON = true` in
+`apps/web/lib/alpenglow/shared.ts` makes `/alpenglow` show "Coming soon" and
+makes every POST action of `/api/alpenglow/*` answer 503. The code stays.
+
+`soda-web` no longer uses Solami. Its Solana RPC is the public mainnet
+endpoint. The exposed wallet `ECbz1uJT…` was emptied on 2026-10-28 (tx
+`ByCkVRt1…`) and its key was removed from Railway.
 
 ## Railway deployment — added 2026-09-18 (MPC services retired 2026-10-28)
 

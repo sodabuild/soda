@@ -15,7 +15,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { keccak256 } from "viem";
 import { AAVE_V3_BASE_SEPOLIA } from "@soda-sdk/core";
 
-import { ALPENGLOW, approvalMemo, DEPOSIT_WEI, NON_SIGNER_CHOICES, type PrepareResponse } from "@/lib/alpenglow/shared";
+import { ALPENGLOW, ALPENGLOW_COMING_SOON, approvalMemo, DEPOSIT_WEI, NON_SIGNER_CHOICES, type PrepareResponse } from "@/lib/alpenglow/shared";
 import {
   accountState,
   certify,
@@ -47,6 +47,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(200).json({ owner: demoOwner()?.publicKey.toBase58() ?? null });
     }
     if (req.method !== "POST") return res.status(405).json({ error: "method not allowed" });
+    if (ALPENGLOW_COMING_SOON) return res.status(503).json({ error: "The Alpenglow demo is coming soon." });
 
     if (action === "prepare") {
       const state = await accountState(String(body.owner), net);
