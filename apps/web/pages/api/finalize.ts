@@ -27,6 +27,7 @@ import {
   openSoda,
   rememberLastTxHash,
 } from "@/lib/server-signing";
+import { MPC_RETIRED, rejectRetired } from "@/lib/mpc-retired";
 
 // Same chain the browser was built for (see lib/chain.ts). The chain id goes
 // into the EIP-155 RLP that this route re-encodes, and the payload-recompute
@@ -70,6 +71,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  if (MPC_RETIRED) return rejectRetired(res);
   if (req.method !== "POST") {
     return res.status(405).json({ error: "method not allowed" });
   }

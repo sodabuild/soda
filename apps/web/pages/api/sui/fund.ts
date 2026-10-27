@@ -41,6 +41,7 @@ import {
 } from "@soda-sdk/core";
 
 import { serverSuiChain, suiChainMismatch } from "@/lib/chain";
+import { MPC_RETIRED, rejectRetired } from "@/lib/mpc-retired";
 
 // Same network the browser was built for (see lib/chain.ts), so the sponsor
 // funds where the demo will actually submit. Each network has its own
@@ -118,6 +119,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  if (MPC_RETIRED) return rejectRetired(res);
   if (req.method !== "POST") {
     return res.status(405).json({ error: "method not allowed" });
   }

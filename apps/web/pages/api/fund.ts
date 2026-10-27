@@ -24,6 +24,7 @@ import { chainRpcUrl } from "@soda-sdk/core";
 import { secp256k1 } from "@noble/curves/secp256k1";
 import { keccak_256 } from "@noble/hashes/sha3";
 import { chainMismatch, serverChain } from "@/lib/chain";
+import { MPC_RETIRED, rejectRetired } from "@/lib/mpc-retired";
 
 // Same chain the browser was built for (see lib/chain.ts), so the sponsor
 // funds on the chain the demo will actually broadcast to. Each chain has its
@@ -47,6 +48,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  if (MPC_RETIRED) return rejectRetired(res);
   if (req.method !== "POST") {
     return res.status(405).json({ error: "method not allowed" });
   }

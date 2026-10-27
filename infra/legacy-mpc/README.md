@@ -1,9 +1,9 @@
 # Legacy MPC hosting files
 
 These files run the MPC signer (two `mpc-node` instances and the
-`mpc-coordinator`) outside Railway. They are kept because the MPC signer is
-still the live signer on Railway, and these files are the reference for running
-it elsewhere.
+`mpc-coordinator`) outside Railway. The MPC signer was retired on 28 Oct 2026, and its Railway
+services no longer run. These files stay as the reference for running it
+again.
 
 | File | What it does | Status |
 |---|---|---|
@@ -11,4 +11,4 @@ it elsewhere.
 | `Dockerfile.mpc-aio` | One image that runs p1, p2, and the coordinator together, supervised by `scripts/mpc-all-in-one.mjs`. Build from the repo root: `docker build -f infra/legacy-mpc/Dockerfile.mpc-aio .` | Not used by any current deployment |
 | `render.yaml` | Render Blueprint for the old Render deployment, which was deleted. Render reads a Blueprint only from the repository root, so move it back before reusing it. | Not used |
 
-Railway does not use these files. Its services build from `apps/*/Dockerfile`.
+Railway did not use these files. Its services built from `apps/*/Dockerfile`.

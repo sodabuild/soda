@@ -52,6 +52,8 @@ import {
 } from "@soda-sdk/core";
 
 import SignAndSendButton from "@/components/SignAndSendButton";
+import MpcRetiredNotice from "@/components/MpcRetiredNotice";
+import { MPC_RETIRED } from "@/lib/mpc-retired";
 import StepCard from "@/components/StepCard";
 import SuiAddressCard, { formatSui } from "@/components/SuiAddressCard";
 import Timeline, {
@@ -978,16 +980,20 @@ function SuiFlow({
                       </p>
                     ) : null}
                     <div className="mt-4">
-                      <SignAndSendButton
-                        disabled={
-                          buttonDisabled ||
-                          (busy && running !== def.key) ||
-                          nothingToSell
-                        }
-                        busy={running === def.key}
-                        label={done ? def.buttonAgain : def.button}
-                        onClick={() => runAction(def.key)}
-                      />
+                      {MPC_RETIRED ? (
+                        <MpcRetiredNotice />
+                      ) : (
+                        <SignAndSendButton
+                          disabled={
+                            buttonDisabled ||
+                            (busy && running !== def.key) ||
+                            nothingToSell
+                          }
+                          busy={running === def.key}
+                          label={done ? def.buttonAgain : def.button}
+                          onClick={() => runAction(def.key)}
+                        />
+                      )}
                     </div>
                   </div>
                 );

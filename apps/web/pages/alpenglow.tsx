@@ -334,7 +334,7 @@ export default function AlpenglowPage() {
             <div className="text-xl font-semibold">SODA</div>
             <nav className="flex rounded-lg border border-zinc-800 p-0.5 text-sm">
               <Link href="/" className="rounded-md px-3 py-1 text-zinc-400 hover:text-zinc-100">
-                MPC · live
+                MPC · retired
               </Link>
               <span className="rounded-md bg-zinc-800 px-3 py-1 text-zinc-100">Alpenglow · testnet</span>
             </nav>

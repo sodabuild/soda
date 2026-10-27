@@ -11,6 +11,8 @@ import {
 
 import DerivedAddressCard from "@/components/DerivedAddressCard";
 import SignAndSendButton from "@/components/SignAndSendButton";
+import MpcRetiredNotice from "@/components/MpcRetiredNotice";
+import { MPC_RETIRED } from "@/lib/mpc-retired";
 import SignedHexView from "@/components/SignedHexView";
 import StepCard from "@/components/StepCard";
 import Timeline, { type TimelineState, type Step } from "@/components/Timeline";
@@ -1136,12 +1138,18 @@ const data  = ${
                         </p>
                       ) : null}
                       <div className="mt-4">
-                        <SignAndSendButton
-                          disabled={buttonDisabled || (busy && running !== def.key)}
-                          busy={running === def.key}
-                          label={done ? def.buttonAgain : def.button}
-                          onClick={() => runAction(def.key)}
-                        />
+                        {MPC_RETIRED ? (
+                          <p className="text-sm text-zinc-500">
+                            MPC demo retired. Signing is off.
+                          </p>
+                        ) : (
+                          <SignAndSendButton
+                            disabled={buttonDisabled || (busy && running !== def.key)}
+                            busy={running === def.key}
+                            label={done ? def.buttonAgain : def.button}
+                            onClick={() => runAction(def.key)}
+                          />
+                        )}
                       </div>
 
                       {results[def.key] ? (
@@ -1162,7 +1170,7 @@ const data  = ${
             <div className="text-xl font-semibold">SODA</div>
             <nav className="flex rounded-lg border border-zinc-800 p-0.5 text-sm">
               <span className="rounded-md bg-zinc-800 px-3 py-1 text-zinc-100">
-                MPC · live
+                {MPC_RETIRED ? "MPC · retired" : "MPC · live"}
               </span>
               <a
                 href="/alpenglow"
@@ -1204,6 +1212,8 @@ const data  = ${
             anything is broadcast.
           </p>
         </div>
+
+        {MPC_RETIRED ? <MpcRetiredNotice /> : null}
 
         {configError ? (
           <div className="rounded-lg border border-rose-900 bg-rose-950/40 px-4 py-3 text-sm text-rose-200">

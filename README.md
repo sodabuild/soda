@@ -495,7 +495,7 @@ packages/soda-sdk/             TypeScript: derivation, RLP, chain registry, Aave
                                sui.ts (address, BCS, hashes, signature envelope, GraphQL client)
 apps/demo/                     CLI demos (demo.ts, demo-sui.ts) and the audit tools (verify.ts, verify-sui.ts)
 apps/web/                      Next.js app at sodalabs.org: Phantom → Solana request → committee → broadcast
-apps/mpc-node/                 legacy MPC signer: threshold-ECDSA node (Lindell '17), still deployed on Railway
+apps/mpc-node/                 legacy MPC signer: threshold-ECDSA node (Lindell '17), retired 28 Oct 2026
 apps/mpc-coordinator/          legacy MPC signer: drives the signing protocol between the two nodes
 apps/mpc-subscriber/           legacy MPC signer: watches SigRequested, asks the committee, finalizes
 apps/relayer/                  event subscriber that assembles and broadcasts signed txs (EVM RLP, Sui BCS)
@@ -516,9 +516,11 @@ Working code moves into this repository through a pull request once it is ready.
 
 ## Status
 
-Hackathon build. Live on Solana devnet, reaching Ethereum Sepolia, Base
-Sepolia and Sui testnet, with all three caller programs deployed. The MPC
-committee has been the live signer since 2026-09-18. All six services (two
-MPC nodes, coordinator, subscriber, relayer and the web app) run on Railway;
-only the web app and the coordinator are public. Not audited. Do not put real money behind a derived address until the
-committee is *t*-of-*n* under independent operators.
+Hackathon build. Not audited.
+
+**The MPC signer is retired (28 Oct 2026).** The two MPC nodes, the
+coordinator, the subscriber and the relayer no longer run on Railway. Only
+the web app runs. On sodalabs.org the MPC pages show "MPC demo retired", and
+their signing API routes answer 410 (see `apps/web/lib/mpc-retired.ts`). The
+MPC code stays in this repository as legacy, for reference. The Alpenglow
+light client (`/alpenglow`, `contracts/evm/`) is the current direction.

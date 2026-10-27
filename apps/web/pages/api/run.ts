@@ -11,6 +11,7 @@
 
 import type { NextApiRequest, NextApiResponse } from "next";
 import { runDemo, type RunEvent } from "@/lib/run-demo";
+import { MPC_RETIRED, rejectRetired } from "@/lib/mpc-retired";
 
 export const config = {
   api: {
@@ -22,6 +23,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  if (MPC_RETIRED) return rejectRetired(res);
   res.setHeader("content-type", "text/event-stream");
   res.setHeader("cache-control", "no-cache, no-transform");
   res.setHeader("connection", "keep-alive");

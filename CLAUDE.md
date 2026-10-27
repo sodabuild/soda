@@ -728,7 +728,21 @@ checks, and Aave then reported 0.1 USDC held + 0.1 vUSDC debt against
 ~$0.75 of aWETH collateral. `scripts/demo.sh`'s SOL gate now only demands 5 SOL when
 a deploy is needed (0.05 otherwise).
 
-## Railway deployment — added 2026-09-18 (CURRENT)
+## MPC retired — 2026-10-28 (CURRENT)
+
+The MPC signing method is dropped. On Railway the five MPC services
+(`soda-mpc-node-p1`, `soda-mpc-node-p2`, `soda-mpc-coordinator`,
+`soda-mpc-subscriber`, `soda-relayer`) have no deployment and are
+disconnected from the repo, so a push cannot restart them. Their variables
+are kept. Only `soda-web` runs. The project has no volumes or buckets.
+
+In `apps/web`, `lib/mpc-retired.ts` sets `MPC_RETIRED = true`. The MPC pages
+show "MPC demo retired" instead of the sign buttons, and `/api/run`,
+`/api/finalize`, `/api/fund`, `/api/sui/finalize` and `/api/sui/fund` answer
+410. `/alpenglow` still works. Do not spend time restoring MPC. The
+`SODA_DRY_RUN=1` demo check is not applicable any more.
+
+## Railway deployment — added 2026-09-18 (MPC services retired 2026-10-28)
 
 Render is deleted and Vercel is abandoned (still deployed, still on the
 dead dev key — ignore it, do not demo it). Railway runs all six services
