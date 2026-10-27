@@ -11,12 +11,12 @@ import { privateKeyToAccount } from 'viem/accounts'
 import { baseSepolia } from 'viem/chains'
 import { RPC } from './local-cert.mjs'
 
-const env = fs.readFileSync(new URL('../../.env', import.meta.url), 'utf8')
+const env = fs.readFileSync(new URL('../../../.env', import.meta.url), 'utf8')
 const account = privateKeyToAccount(`0x${env.match(/^SEPOLIA_FUNDER_KEY=(.*)$/m)[1].trim().replace(/^0x/, '')}`)
 const pub = createPublicClient({ chain: baseSepolia, transport: http('https://sepolia.base.org') })
 const wallet = createWalletClient({ account, chain: baseSepolia, transport: http('https://sepolia.base.org') })
-const C = JSON.parse(fs.readFileSync(new URL('../../contracts/evm/out/AlpenglowSim.json', import.meta.url), 'utf8')).ShredInclusion
-const P = JSON.parse(fs.readFileSync(new URL('./out/inclusion-proof.json', import.meta.url), 'utf8'))
+const C = JSON.parse(fs.readFileSync(new URL('../out/AlpenglowSim.json', import.meta.url), 'utf8')).ShredInclusion
+const P = JSON.parse(fs.readFileSync(new URL('../out/inclusion-proof.json', import.meta.url), 'utf8'))
 if (P.shreds.length !== 1) throw new Error('this check handles a transaction inside one shred')
 
 const tx = await new Connection(RPC).getTransaction(P.approval, { commitment: 'finalized', maxSupportedTransactionVersion: 0 })
@@ -56,4 +56,4 @@ try { await pub.readContract({ address, abi: C.abi, functionName: 'blockId', arg
 const bad2 = [...args]; bad2[2] = [...args[2]]; bad2[2][0] = `0x${'11'.repeat(20)}`
 const r2 = await pub.readContract({ address, abi: C.abi, functionName: 'blockId', args: bad2 })
 console.log(`changed proof entry: root ${r2.slice(2) === P.certBlockId ? 'MATCHES (wrong)' : 'differs (rejected)'}`)
-fs.writeFileSync(new URL('./out/inclusion-onchain.json', import.meta.url), JSON.stringify({ address, gas: gas.toString(), calldataBytes: (data.length - 2) / 2, match: root.slice(2) === P.certBlockId }, null, 2))
+fs.writeFileSync(new URL('../out/inclusion-onchain.json', import.meta.url), JSON.stringify({ address, gas: gas.toString(), calldataBytes: (data.length - 2) / 2, match: root.slice(2) === P.certBlockId }, null, 2))

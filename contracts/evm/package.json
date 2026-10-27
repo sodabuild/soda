@@ -3,9 +3,19 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "compile": "node compile.mjs"
+    "compile": "node compile.mjs",
+    "test:negative": "node test/local-negative.mjs",
+    "test:e2e": "node test/local-flow.mjs",
+    "test:inclusion": "node test/inclusion-run.mjs",
+    "test:inclusion-onchain": "node test/inclusion-onchain.mjs"
   },
   "dependencies": {
-    "solc": "0.8.28"
+    "solc": "0.8.28",
+    "@grpc/grpc-js": "1.12.5",
+    "@grpc/proto-loader": "0.7.13",
+    "@noble/curves": "2.0.1",
+    "@noble/hashes": "2.0.1",
+    "@solana/web3.js": "1.98.0",
+    "viem": "2.21.54"
   }
 }

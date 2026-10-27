@@ -28,14 +28,14 @@ const AAVE_GATEWAY = '0x0568130e794429D2eEBC4dafE18f25Ff1a1ed8b6'
 const AAVE_POOL = '0x8bAB6d1b75f19e9eD9fCe8b9BD338844fF79aE27'
 const A_WETH = '0x73a5bB60b0B0fc35710DDc0ea9c407031E31Bdbb'
 const DEPOSIT = parseEther('0.0001')
-const OUT = new URL('./out/local-deployment.json', import.meta.url)
+const OUT = new URL('../out/local-deployment.json', import.meta.url)
 
-const env = fs.readFileSync(new URL('../../.env', import.meta.url), 'utf8')
+const env = fs.readFileSync(new URL('../../../.env', import.meta.url), 'utf8')
 const funder = privateKeyToAccount(`0x${env.match(/^SEPOLIA_FUNDER_KEY=(.*)$/m)[1].trim().replace(/^0x/, '')}`)
 const BASE = 'https://sepolia.base.org'
 const pub = createPublicClient({ chain: baseSepolia, transport: http(BASE) })
 const wallet = createWalletClient({ account: funder, chain: baseSepolia, transport: http(BASE) })
-const C = JSON.parse(fs.readFileSync(new URL('../../contracts/evm/out/AlpenglowSim.json', import.meta.url), 'utf8'))
+const C = JSON.parse(fs.readFileSync(new URL('../out/AlpenglowSim.json', import.meta.url), 'utf8'))
 const fp = (x) => x.toString(16).padStart(128, '0')
 const g1 = (P) => { const a = P.toAffine(); return `0x${fp(a.x)}${fp(a.y)}` }
 const g2 = (bytes) => { const a = bls.G2.Point.fromBytes(bytes).toAffine(); return `0x${fp(a.x.c0)}${fp(a.x.c1)}${fp(a.y.c0)}${fp(a.y.c1)}` }
@@ -140,5 +140,5 @@ const aWeth = await retryRead(() => pub.readContract({ address: A_WETH, abi: par
 console.log(`\naWETH held by the SODA account: ${formatEther(aWeth)}`)
 console.log(`total: ${Math.round(performance.now() - t0)} ms from approval to deposit`)
 await streaming
-fs.writeFileSync(new URL('./out/local-flow-last.json', import.meta.url), JSON.stringify({ approval: sig, slot, blockId: hx(blockId), fast, signedStakePct: pct, finalMs, txs: rows, account: acct, aWeth: aWeth.toString() }, null, 2))
+fs.writeFileSync(new URL('../out/local-flow-last.json', import.meta.url), JSON.stringify({ approval: sig, slot, blockId: hx(blockId), fast, signedStakePct: pct, finalMs, txs: rows, account: acct, aWeth: aWeth.toString() }, null, 2))
 process.exit(0)

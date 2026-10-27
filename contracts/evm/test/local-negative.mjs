@@ -7,9 +7,9 @@ import { createPublicClient, http } from 'viem'
 import { baseSepolia } from 'viem/chains'
 import { readValidatorSet, collectFooterCerts } from './local-cert.mjs'
 
-const C = JSON.parse(fs.readFileSync(new URL('../../contracts/evm/out/AlpenglowSim.json', import.meta.url), 'utf8')).AlpenglowLightClient
-const dep = JSON.parse(fs.readFileSync(new URL('./out/local-deployment.json', import.meta.url), 'utf8'))
-const env = fs.readFileSync(new URL('../../.env', import.meta.url), 'utf8')
+const C = JSON.parse(fs.readFileSync(new URL('../out/AlpenglowSim.json', import.meta.url), 'utf8')).AlpenglowLightClient
+const dep = JSON.parse(fs.readFileSync(new URL('../out/local-deployment.json', import.meta.url), 'utf8'))
+const env = fs.readFileSync(new URL('../../../.env', import.meta.url), 'utf8')
 const pub = createPublicClient({ chain: baseSepolia, transport: http('https://sepolia.base.org') })
 const fp = (x) => x.toString(16).padStart(128, '0')
 const g2 = (b) => { const a = bls.G2.Point.fromBytes(b).toAffine(); return `0x${fp(a.x.c0)}${fp(a.x.c1)}${fp(a.y.c0)}${fp(a.y.c1)}` }
