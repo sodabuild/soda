@@ -23,8 +23,9 @@ The tests run against a local Alpenglow node and Base Sepolia.
 
 1. Start the local node: `pnpm alpenglow:node`. It reads its binaries and
    ledger from `.alpenglow-node/` (git-ignored).
-2. Build the inclusion tool:
-   `cargo build --release --manifest-path crates/shred-inclusion/Cargo.toml`.
+2. Build the inclusion tool: `cd crates/shred-inclusion && cargo build --release`.
+   Run cargo inside that folder. Its `rust-toolchain.toml` pins rustc 1.97.1,
+   and rustup reads that file only from there.
 3. Put `SEPOLIA_FUNDER_KEY` in the repo-root `.env`. The key pays Base Sepolia
    gas. Never commit it.
 4. Run the tests from this folder:

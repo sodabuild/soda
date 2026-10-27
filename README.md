@@ -500,9 +500,8 @@ apps/mpc-coordinator/          legacy MPC signer: drives the signing protocol be
 apps/mpc-subscriber/           legacy MPC signer: watches SigRequested, asks the committee, finalizes
 apps/relayer/                  event subscriber that assembles and broadcasts signed txs (EVM RLP, Sui BCS)
 apps/docs/                     the documentation site
-contracts/evm/                 Alpenglow light client, SODA account and factory, ShredInclusion (Solidity)
+contracts/evm/                 Alpenglow light client, SODA account and factory, ShredInclusion (Solidity) and their regression tests
 crates/shred-inclusion/        Rust tool that builds shred inclusion proofs from a validator ledger
-research/alpenglow-sim/        Alpenglow prototype experiments (moving to sodabuild/research)
 scripts/                       demo.sh (CLI demo), alpenglow-local-node.sh (local Alpenglow node), deploy scripts
 infra/legacy-mpc/              legacy MPC hosting files (Docker Compose, all-in-one image, Render blueprint)
 docs/operations/               operations notes (AWS MPC deploy, Solami RPC)
@@ -510,8 +509,9 @@ docs/sdk-quickstart.md         install and first call with @soda-sdk/core
 docs/archive/                  superseded documents
 ```
 
-New experiments (ZK proofs, receipt roots, validator-set commitments, chain
-compatibility) live in [sodabuild/research](https://github.com/sodabuild/research).
+Experiments (the first Alpenglow prototype, ZK proofs, receipt roots,
+validator-set commitments, chain compatibility) live in
+[sodabuild/research](https://github.com/sodabuild/research).
 Working code moves into this repository through a pull request once it is ready.
 
 ## Status
